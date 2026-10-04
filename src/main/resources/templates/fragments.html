@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head(title)">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title th:text="${title} + ' · Транспорт'">Транспорт</title>
+<link rel="icon" type="image/svg+xml" th:href="@{/favicon.svg}">
+<link rel="stylesheet" th:href="@{/css/app.css}"><script th:src="@{/js/app.js}" defer></script>
+</head><body>
+<div th:fragment="navigation(active)">
+<header class="topbar">
+<a class="brand" th:href="@{/vehicles}"><strong>Транспорт</strong><small>Лабораторная №1 · Вариант 84121905</small></a>
+<div class="student"><strong>Лейковский Никита</strong><small>ИСУ 466497</small></div>
+<span class="connection" id="connection-status" aria-live="polite"><span class="connection-dot"></span><span>Подключение…</span></span>
+</header>
+<nav class="side-nav" aria-label="Основная навигация">
+<a th:href="@{/vehicles}" th:classappend="${active == 'vehicles'} ? 'active'" th:attr="aria-current=${active == 'vehicles' ? 'page' : null}">Реестр</a>
+<a th:href="@{/vehicles/new}" th:classappend="${active == 'create'} ? 'active'" th:attr="aria-current=${active == 'create' ? 'page' : null}">Добавить</a>
+<a th:href="@{/operations}" th:classappend="${active == 'operations'} ? 'active'" th:attr="aria-current=${active == 'operations' ? 'page' : null}">Операции</a>
+<a th:href="@{/coordinates}" th:classappend="${active == 'coordinates'} ? 'active'">Координаты</a>
+<form class="logout-form" method="post" th:action="@{/logout}"><button class="text-button" type="submit">Выйти</button></form>
+</nav></div>
+<div th:fragment="alerts" class="alerts" aria-live="polite">
+<div class="alert success" th:if="${success}" th:text="${success}"></div>
+<div class="alert warning" th:if="${warning}" th:text="${warning}"></div>
+</div></body></html>

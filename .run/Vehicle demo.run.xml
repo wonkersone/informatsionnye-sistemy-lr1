@@ -1,0 +1,8 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Vehicle demo" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="ru.itmo.vehiclelab.VehicleLab1Application" />
+    <module name="vehicle-lab1" />
+    <option name="PROGRAM_PARAMETERS" value="--spring.profiles.active=demo" />
+    <method v="2"><option name="Make" enabled="true" /></method>
+  </configuration>
+</component>

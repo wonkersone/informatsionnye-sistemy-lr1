@@ -1,0 +1,13 @@
+<!doctype html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Вход')}"></head>
+<body>
+<header class="topbar"><a class="brand" th:href="@{/vehicles}"><strong>Транспорт</strong><small>Лабораторная №1 · Вариант 84121905</small></a><div class="student"><strong>Лейковский Никита</strong><small>ИСУ 466497</small></div></header>
+<main class="login-panel"><h1>Вход</h1>
+<p class="alert" th:if="${param.error}" role="alert">Неверный логин или пароль</p>
+<p class="alert" th:if="${param.logout}">Вы вышли из системы</p>
+<form method="post" th:action="@{/login}">
+<div class="field"><label for="username">Логин</label><input id="username" name="username" autocomplete="username" required autofocus></div>
+<div class="field"><label for="password">Пароль</label><input id="password" name="password" type="password" autocomplete="current-password" required></div>
+<button class="button primary" type="submit">Войти</button>
+</form></main></body></html>

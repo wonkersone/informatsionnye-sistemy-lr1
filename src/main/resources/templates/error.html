@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Ошибка')}"></head>
+<body data-live-updates="notify">
+<header th:replace="~{fragments :: navigation('')}"></header>
+<main class="shell narrow">
+    <section class="error-sheet">
+        <span class="error-code" th:text="${status ?: 500}">500</span>
+        <div>
+            <h1 th:text="${errorTitle ?: error ?: 'Внутренняя ошибка'}">Внутренняя ошибка</h1>
+            <p th:text="${errorMessage ?: message ?: 'Сервер не смог обработать запрос.'}"></p>
+            <code th:if="${path}" th:text="${path}"></code>
+            <div class="form-actions">
+                <a class="button primary" th:href="@{/vehicles}">Вернуться в реестр</a>
+                <button class="button ghost" type="button" onclick="history.back()">Назад</button>
+            </div>
+        </div>
+    </section>
+</main>
+</body>
+</html>

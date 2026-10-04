@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Координаты')}"></head>
+<body data-live-updates="reload">
+<header th:replace="~{fragments :: navigation('coordinates')}"></header>
+<main class="shell">
+<div th:replace="~{fragments :: alerts}"></div>
+<section class="page-heading"><h1>Координаты</h1></section>
+<form class="coordinate-create" method="post" th:action="@{/coordinates}">
+<div class="field"><label for="new-x">X</label><input id="new-x" name="x" type="number" step="any" required></div>
+<div class="field"><label for="new-y">Y, не больше 408</label><input id="new-y" name="y" type="number" step="any" max="408" required></div>
+<button class="button primary" type="submit">Добавить</button>
+</form>
+<div class="table-wrap"><table>
+<thead><tr><th>ID</th><th>X</th><th>Y</th><th>Связанных объектов</th><th>Действия</th></tr></thead>
+<tbody><tr th:each="point : ${coordinates}">
+<td th:text="${point.id}"></td><td th:text="${point.x}"></td><td th:text="${point.y}"></td><td th:text="${linkedCounts[point.id]}"></td>
+<td class="row-actions">
+<button class="text-button" type="button" th:attr="data-open-dialog='edit-coordinates-' + ${point.id}">Изменить</button>
+<button class="text-button" type="button" th:attr="data-open-dialog='delete-coordinates-' + ${point.id}">Удалить</button>
+<dialog class="coordinate-dialog" th:id="'edit-coordinates-' + ${point.id}" th:attr="aria-labelledby='edit-title-' + ${point.id}">
+<h2 th:id="'edit-title-' + ${point.id}" th:text="'Координаты #' + ${point.id}"></h2>
+<form method="post" th:action="@{/coordinates/{id}/update(id=${point.id})}">
+<div class="field"><label th:for="'edit-x-' + ${point.id}">X</label><input th:id="'edit-x-' + ${point.id}" name="x" type="number" step="any" th:value="${point.x}" required></div>
+<div class="field"><label th:for="'edit-y-' + ${point.id}">Y, не больше 408</label><input th:id="'edit-y-' + ${point.id}" name="y" type="number" step="any" max="408" th:value="${point.y}" required></div>
+<div class="form-actions"><button class="button primary" type="submit">Сохранить</button><button class="button ghost" type="button" data-close-dialog>Отмена</button></div>
+</form></dialog>
+<dialog class="coordinate-dialog" th:id="'delete-coordinates-' + ${point.id}" th:attr="aria-labelledby='delete-title-' + ${point.id}">
+<h2 th:id="'delete-title-' + ${point.id}" th:text="'Удалить координаты #' + ${point.id} + '?'"></h2>
+<form method="post" th:action="@{/coordinates/{id}/delete(id=${point.id})}">
+<div class="field" th:if="${linkedCounts[point.id] > 0}">
+<label th:for="'replacement-' + ${point.id}">Переназначить связанные объекты</label>
+<select th:id="'replacement-' + ${point.id}" name="replacementId" required>
+<option value="">Выберите другие координаты</option><option th:each="replacement : ${coordinates}" th:if="${replacement.id != point.id}" th:value="${replacement.id}" th:text="'#' + ${replacement.id} + ' (' + ${replacement.x} + '; ' + ${replacement.y} + ')'"></option></select>
+<p class="field-hint" th:if="${coordinates.size() < 2}">Сначала добавьте другие координаты.</p>
+</div><div class="form-actions"><button class="button danger" type="submit">Удалить</button><button class="button ghost" type="button" data-close-dialog>Отмена</button></div>
+</form></dialog>
+</td></tr></tbody></table></div>
+<p class="empty-state" th:if="${coordinates.isEmpty()}">Координат пока нет</p>
+</main></body></html>

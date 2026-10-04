@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Реестр транспорта')}"></head>
+<body data-live-updates="reload">
+<header th:replace="~{fragments :: navigation('vehicles')}"></header>
+
+<main class="shell">
+    <div th:replace="~{fragments :: alerts}"></div>
+
+    <section class="page-heading">
+        <div>
+            <h1>Реестр транспорта</h1>
+        </div>
+        <a class="button primary" th:href="@{/vehicles/new}">Добавить объект</a>
+    </section>
+
+    <form class="filter-bar" method="get" th:action="@{/vehicles}">
+        <div class="field grow">
+            <label for="name">Название</label>
+            <input id="name" name="name" th:value="${name}" placeholder="Точное название">
+        </div>
+        <div class="field">
+            <label for="type">Тип</label>
+            <select id="type" name="type">
+                <option value="">Любой</option>
+                <option th:each="item : ${vehicleTypes}" th:value="${item}"
+                        th:selected="${item == selectedType}" th:text="${item.displayName}"></option>
+            </select>
+        </div>
+        <div class="field">
+            <label for="fuelType">Топливо</label>
+            <select id="fuelType" name="fuelType">
+                <option value="">Любое</option>
+                <option th:each="item : ${fuelTypes}" th:value="${item}"
+                        th:selected="${item == selectedFuelType}" th:text="${item.displayName}"></option>
+            </select>
+        </div>
+        <input type="hidden" name="size" th:value="${vehicles.size}">
+        <button class="button primary" type="submit">Применить</button>
+        <a class="button ghost" th:href="@{/vehicles}">Сбросить</a>
+    </form>
+
+    <section class="registry" aria-labelledby="registry-title">
+        <div class="registry-meta">
+            <h2 id="registry-title">Транспортные средства</h2>
+            <span th:text="${vehicles.totalElements} + ' найдено'">0 найдено</span>
+        </div>
+
+        <div class="table-wrap" th:if="${vehicles.hasContent()}">
+            <table>
+                <thead>
+                <tr>
+                    <th><a th:href="@{/vehicles(page=0,size=${vehicles.size},sort='id',direction=${sort == 'id' and direction == 'ASC' ? 'DESC' : 'ASC'},name=${name},type=${selectedType},fuelType=${selectedFuelType})}">ID</a></th>
+                    <th><a th:href="@{/vehicles(page=0,size=${vehicles.size},sort='name',direction=${sort == 'name' and direction == 'ASC' ? 'DESC' : 'ASC'},name=${name},type=${selectedType},fuelType=${selectedFuelType})}">Название</a></th>
+                    <th>X</th>
+                    <th>Y</th>
+                    <th><a th:href="@{/vehicles(page=0,size=${vehicles.size},sort='creationDate',direction=${sort == 'creationDate' and direction == 'ASC' ? 'DESC' : 'ASC'},name=${name},type=${selectedType},fuelType=${selectedFuelType})}">Создан</a></th>
+                    <th><a th:href="@{/vehicles(page=0,size=${vehicles.size},sort='type',direction=${sort == 'type' and direction == 'ASC' ? 'DESC' : 'ASC'},name=${name},type=${selectedType},fuelType=${selectedFuelType})}">Тип</a></th>
+                    <th>Мощность</th>
+                    <th>Колёса</th>
+                    <th>Вместимость</th>
+                    <th>Пробег</th>
+                    <th>Расход</th>
+                    <th><a th:href="@{/vehicles(page=0,size=${vehicles.size},sort='fuelType',direction=${sort == 'fuelType' and direction == 'ASC' ? 'DESC' : 'ASC'},name=${name},type=${selectedType},fuelType=${selectedFuelType})}">Топливо</a></th>
+                    <th><span class="visually-hidden">Действия</span></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="vehicle : ${vehicles.content}">
+                    <td class="measure" th:text="${vehicle.id}"></td>
+                    <td class="vehicle-name"><a th:href="@{/vehicles/{id}(id=${vehicle.id})}" th:text="${vehicle.name}"></a></td>
+                    <td class="measure" th:text="${vehicle.coordinates.x}"></td>
+                    <td class="measure" th:text="${vehicle.coordinates.y}"></td>
+                    <td class="nowrap" th:text="${#dates.format(vehicle.creationDate, 'dd.MM.yyyy HH:mm')}"></td>
+                    <td><span class="tag" th:text="${vehicle.type.displayName}"></span></td>
+                    <td class="measure" th:text="${vehicle.enginePower}"></td>
+                    <td class="measure" th:text="${vehicle.numberOfWheels}"></td>
+                    <td class="measure" th:text="${vehicle.capacity}"></td>
+                    <td class="measure" th:text="${vehicle.distanceTravelled}"></td>
+                    <td class="measure" th:text="${vehicle.fuelConsumption}"></td>
+                    <td th:text="${vehicle.fuelType.displayName}"></td>
+                    <td><a data-edit class="table-action" th:href="@{/vehicles/{id}/edit(id=${vehicle.id})}">Изменить</a></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="empty-state" th:unless="${vehicles.hasContent()}">
+            <strong>Объекты не найдены</strong>
+            <a class="button primary" th:href="@{/vehicles/new}">Создать объект</a>
+        </div>
+
+        <div class="pagination" th:if="${vehicles.totalPages > 1}">
+            <a class="button ghost" th:classappend="${vehicles.first} ? 'disabled'"
+               th:href="${vehicles.first} ? '#' : @{/vehicles(page=${vehicles.number - 1},size=${vehicles.size},sort=${sort},direction=${direction},name=${name},type=${selectedType},fuelType=${selectedFuelType})}">Назад</a>
+            <span>Страница <strong th:text="${vehicles.number + 1}"></strong> из <strong th:text="${vehicles.totalPages}"></strong></span>
+            <a class="button ghost" th:classappend="${vehicles.last} ? 'disabled'"
+               th:href="${vehicles.last} ? '#' : @{/vehicles(page=${vehicles.number + 1},size=${vehicles.size},sort=${sort},direction=${direction},name=${name},type=${selectedType},fuelType=${selectedFuelType})}">Далее</a>
+        </div>
+    </section>
+</main>
+
+</body>
+</html>

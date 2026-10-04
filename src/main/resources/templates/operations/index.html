@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Операции')}"></head>
+<body data-live-updates="notify">
+<header th:replace="~{fragments :: navigation('operations')}"></header>
+<main class="shell">
+<div th:replace="~{fragments :: alerts}"></div>
+<section class="page-heading"><h1>Операции</h1></section>
+<section class="operations-grid">
+<h2>Поиск и подсчёт</h2>
+<article class="operation"><h2>Расход выше порога</h2>
+<form method="get" th:action="@{/operations/count}">
+<div class="field"><label for="count-consumption">Порог расхода</label><input id="count-consumption" name="fuelConsumption" type="number" step="any" required th:value="${countThreshold}"></div>
+<button class="button secondary" type="submit">Посчитать</button></form></article>
+<output class="operation-result" th:if="${countResult != null}">Количество: <strong th:text="${countResult}"></strong></output>
+<article class="operation"><h2>Тип транспорта</h2>
+<form method="get" th:action="@{/operations/by-type}">
+<div class="field"><label for="search-type">Тип</label><select id="search-type" name="type" required><option value="">Выберите тип</option><option th:each="item : ${vehicleTypes}" th:value="${item}" th:text="${item.displayName}"></option></select></div><button class="button secondary" type="submit">Найти</button></form></article>
+<article class="operation"><h2>Мощность двигателя</h2>
+<form class="range-form" method="get" th:action="@{/operations/by-power}">
+<div class="field"><label for="power-min">От, включительно</label><input id="power-min" name="min" type="number" required></div>
+<div class="field"><label for="power-max">До, включительно</label><input id="power-max" name="max" type="number" required></div>
+<button class="button secondary" type="submit">Найти</button></form></article>
+<h2>Удаление</h2>
+<article class="operation"><h2>Все с выбранным топливом</h2>
+<form method="post" th:action="@{/operations/delete-by-fuel}" data-confirm="Удалить все транспортные средства с выбранным топливом?">
+<div class="field"><label for="delete-fuel">Топливо</label><select id="delete-fuel" name="fuelType" required><option value="">Выберите топливо</option><option th:each="item : ${fuelTypes}" th:value="${item}" th:text="${item.displayName}"></option></select></div><button class="button danger" type="submit">Удалить все</button></form></article>
+<article class="operation"><h2>Один с заданным расходом</h2>
+<form method="post" th:action="@{/operations/delete-one-by-consumption}" data-confirm="Удалить одно транспортное средство с заданным расходом?">
+<div class="field"><label for="delete-consumption">Точный расход</label><input id="delete-consumption" name="fuelConsumption" type="number" step="any" required></div><button class="button danger" type="submit">Удалить один</button></form></article>
+</section>
+<section class="operation-results" th:if="${resultVehicles != null}">
+<div class="registry-meta"><h2 th:text="${resultTitle}"></h2><span th:text="${resultVehicles.size()} + ' найдено'"></span></div>
+<div class="table-wrap" th:if="${!resultVehicles.isEmpty()}"><table>
+<thead><tr><th>ID</th><th>Название</th><th>Тип</th><th>Мощность</th><th>Расход</th><th>Топливо</th></tr></thead>
+<tbody><tr th:each="vehicle : ${resultVehicles}">
+<td class="measure" th:text="${vehicle.id}"></td><td class="vehicle-name"><a th:href="@{/vehicles/{id}(id=${vehicle.id})}" th:text="${vehicle.name}"></a></td>
+<td th:text="${vehicle.type.displayName}"></td><td class="measure" th:text="${vehicle.enginePower}"></td><td class="measure" th:text="${vehicle.fuelConsumption}"></td><td th:text="${vehicle.fuelType.displayName}"></td>
+</tr></tbody></table></div><div class="empty-state compact-empty" th:if="${resultVehicles.isEmpty()}">Совпадений нет.</div>
+</section></main></body></html>

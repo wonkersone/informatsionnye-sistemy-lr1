@@ -1,0 +1,241 @@
+\documentclass[14pt,a4paper]{extarticle}
+\usepackage{fontspec}
+\setmainfont{Times New Roman}
+\usepackage[russian]{babel}
+\usepackage[left=30mm,right=15mm,top=20mm,bottom=20mm]{geometry}
+\usepackage{setspace}
+\onehalfspacing
+\renewcommand{\normalsize}{\fontsize{14pt}{16.8pt}\selectfont}
+\normalsize
+\usepackage{indentfirst}
+\setlength{\parindent}{1.25cm}
+\setlength{\parskip}{0pt}
+\usepackage{enumitem}
+\setlist{nosep,leftmargin=1.25cm}
+\usepackage{titlesec}
+\titleformat{\section}{\normalfont\fontsize{14}{17}\selectfont\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}{\normalfont\fontsize{14}{17}\selectfont\bfseries}{\thesubsection}{1em}{}
+\titlespacing*{\section}{0pt}{14pt}{14pt}
+\titlespacing*{\subsection}{0pt}{12pt}{8pt}
+\usepackage{tocloft}
+\renewcommand{\contentsname}{Содержание}
+\renewcommand{\cfttoctitlefont}{\normalfont\fontsize{14}{17}\selectfont\bfseries}
+\renewcommand{\cftsecfont}{\normalfont}
+\renewcommand{\cftsecpagefont}{\normalfont}
+\setlength{\cftbeforesecskip}{0pt}
+\usepackage{longtable,array}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,shapes.multipart,calc}
+\usepackage{caption}
+\captionsetup{font=normalsize,labelsep=endash}
+\addto\captionsrussian{\renewcommand{\figurename}{Рисунок}}
+\usepackage[hidelinks]{hyperref}
+\hypersetup{pdftitle={Лабораторная работа №1. Вариант 84121905},pdfauthor={Лейковский Никита}}
+\pagestyle{plain}
+\emergencystretch=2em
+\tikzset{cls/.style={rectangle split,rectangle split parts=2,draw,align=left,font=\fontsize{11}{13}\selectfont,inner sep=6pt}, dep/.style={dashed,-{Stealth}}, assoc/.style={-{Stealth}}, pkg/.style={draw,minimum width=42mm,minimum height=14mm,font=\fontsize{12}{14}\selectfont}}
+\begin{document}
+\begin{titlepage}
+\begin{center}
+Университет ИТМО\\
+Информационные системы
+\vfill
+\textbf{Отчёт по лабораторной работе №1}\\[10pt]
+Управление транспортными средствами\\
+Вариант 84121905
+\end{center}
+\vfill
+\begin{flushright}
+Выполнил: Лейковский Никита\\
+ИСУ 466497
+\end{flushright}
+\vfill
+\begin{center}Санкт-Петербург\\2026\end{center}
+\end{titlepage}
+\setcounter{page}{2}
+\tableofcontents
+\clearpage
+\section{Текст задания}
+Реализовать информационную систему, которая позволяет взаимодействовать с объектами класса Vehicle, описание которого приведено ниже.
+
+\subsection*{Модель данных}
+Класс Vehicle содержит следующие закрытые поля. Типы и ограничения соответствуют варианту 84121905.
+
+{\setstretch{1.0}
+\begin{longtable}{|p{.25\textwidth}|p{.20\textwidth}|p{.45\textwidth}|}
+\hline
+Поле & Тип & Ограничения\\\hline
+\endhead
+id & Integer & Не null; больше 0; уникальное; генерируется автоматически.\\\hline
+name & String & Не null; строка не может быть пустой.\\\hline
+coordinates & Coordinates & Не null.\\\hline
+creationDate & java.util.Date & Не null; генерируется автоматически.\\\hline
+type & VehicleType & Не null.\\\hline
+enginePower & int & Больше 0.\\\hline
+numberOfWheels & Integer & Не null; больше 0.\\\hline
+capacity & Double & Не null; больше 0.\\\hline
+distanceTravelled & int & Больше 0.\\\hline
+fuelConsumption & double & Больше 0.\\\hline
+fuelType & FuelType & Не null.\\\hline
+\end{longtable}}
+Класс Coordinates содержит закрытые поля x типа Double и y типа Float. Оба поля не могут быть null. Максимальное значение y: 408.
+
+Перечисление VehicleType: PLANE, BOAT, SHIP. Перечисление FuelType: DIESEL, ALCOHOL, MANPOWER.
+
+\subsection*{Основные требования}
+\begin{enumerate}
+\item Основное назначение информационной системы --- управление объектами, созданными на основе заданного в варианте класса.
+\item Необходимо, чтобы с помощью системы можно было выполнить следующие операции с объектами: создание нового объекта, получение информации об объекте по ИД, обновление объекта (модификация его атрибутов), удаление объекта. Операции должны осуществляться в отдельных окнах (интерфейсах) приложения. При получении информации об объекте класса должна также выводиться информация о связанных с ним объектах.
+\item При создании объекта класса необходимо дать пользователю возможность связать новый объект с объектами вспомогательных классов, которые могут быть связаны с созданным объектом и уже есть в системе.
+\item Выполнение операций по управлению объектами должно осуществляться на серверной части (не на клиенте), изменения должны синхронизироваться с базой данных.
+\item На главном экране системы должен выводиться список текущих объектов в виде таблицы (каждый атрибут объекта --- отдельная колонка в таблице). При отображении таблицы должна использоваться пагинация (если все объекты не помещаются на одном экране).
+\item Нужно обеспечить возможность фильтровать/сортировать строки таблицы, которые показывают объекты (по значениям любой из строковых колонок). Фильтрация элементов должна производиться только по полному совпадению.
+\item Переход к обновлению (модификации) объекта должен быть возможен из таблицы с общим списком объектов и из области с визуализацией объекта (при её реализации).
+\item При добавлении/удалении/изменении объекта он должен автоматически появиться/исчезнуть/измениться в интерфейсах у других пользователей, авторизованных в системе.
+\item Если при удалении объекта с ним связан другой объект, связанные объекты должны быть связаны с другим объектом (по выбору пользователя), а изначальный объект удалён.
+\item Пользователи должны иметь возможность просмотра всех объектов. Для модификации объекта должно открываться отдельное диалоговое окно. При вводе некорректных значений в поля объекта должны появляться информативные сообщения о соответствующих ошибках.
+\end{enumerate}
+
+\subsection*{Специальные операции}
+В системе должен быть реализован отдельный пользовательский интерфейс для выполнения специальных операций над объектами:
+\begin{enumerate}
+\item Удалить все объекты, значение поля fuelType которого эквивалентно заданному.
+\item Удалить один (любой) объект, значение поля fuelConsumption которого эквивалентно заданному.
+\item Вернуть количество объектов, значение поля fuelConsumption которых больше заданного.
+\item Найти все транспортные средства заданного типа.
+\item Найти все транспортные средства с мощностью двигателя в заданном диапазоне.
+\end{enumerate}
+Представленные операции должны быть реализованы в рамках компонентов бизнес-логики приложения без прямого использования функций и процедур БД.
+
+\subsection*{Хранение объектов}
+\begin{enumerate}
+\item Организовать хранение данных об объектах в реляционной СУБД PostgreSQL. Каждый объект, с которым работает ИС, должен быть сохранён в базе данных.
+\item Все требования к полям класса, указанные в виде комментариев к описанию классов, должны быть выполнены на уровне ORM и БД.
+\item Для генерации поля id использовать средства базы данных.
+\item Для подключения к БД на кафедральном сервере использовать хост pg, имя базы данных --- studs, имя пользователя/пароль совпадают с таковыми для подключения к серверу.
+\end{enumerate}
+
+\subsection*{Взаимодействие с пользователем}
+\begin{enumerate}
+\item Система должна реагировать на некорректный пользовательский ввод, ограничивая ввод недопустимых значений и информируя пользователей о причине ошибки.
+\item Переходы между различными логически обособленными частями системы должны осуществляться с помощью меню.
+\item При добавлении/удалении/изменении объекта он должен автоматически появиться/исчезнуть/измениться на области у всех других клиентов.
+\end{enumerate}
+
+\subsection*{Требования к разработке}
+\begin{enumerate}
+\item В качестве основы для реализации ИС необходимо использовать Spring MVC.
+\item Для создания уровня хранения необходимо использовать Hibernate.
+\item Разные уровни приложения должны быть отделены друг от друга, разные логические части ИС должны находиться в отдельных компонентах.
+\end{enumerate}
+
+\subsection*{Состав отчёта}
+Текст задания; UML-диаграммы классов и пакетов разработанного приложения; исходный код системы или ссылка на репозиторий с исходным кодом; выводы по работе. Репозиторий при сдаче должен быть публичным; если ветка не указана, используется основная.
+
+\clearpage
+\section{UML-диаграммы}
+\subsection*{Классы предметной области}
+\begin{center}
+\begin{tikzpicture}
+\node[cls,text width=68mm] (v) {\centering\textbf{Vehicle}\par $\langle\!\langle$Entity$\rangle\!\rangle$\nodepart{second}
+-- id: Integer\\-- name: String\\-- coordinates: Coordinates\\-- creationDate: Date\\-- type: VehicleType\\-- enginePower: int\\-- numberOfWheels: Integer\\-- capacity: Double\\-- distanceTravelled: int\\-- fuelConsumption: double\\-- fuelType: FuelType\\[4pt]+ update(...): void};
+\node[cls,text width=40mm,right=18mm of v.north east,anchor=north west] (c) {\centering\textbf{Coordinates}\par $\langle\!\langle$Entity$\rangle\!\rangle$\nodepart{second}-- id: Integer\\-- x: Double\\-- y: Float\\[4pt]+ update(x, y): void};
+\node[cls,text width=40mm,below=22mm of c] (t) {\centering\textbf{VehicleType}\par $\langle\!\langle$enumeration$\rangle\!\rangle$\nodepart{second}PLANE\\BOAT\\SHIP};
+\node[cls,text width=40mm,below=16mm of t] (f) {\centering\textbf{FuelType}\par $\langle\!\langle$enumeration$\rangle\!\rangle$\nodepart{second}DIESEL\\ALCOHOL\\MANPOWER};
+\draw[assoc] (v.east |- c.west) -- node[above,font=\small]{0..* \hspace{6mm} 1} (c.west);
+\draw[assoc] (v.east |- t.west) -- (t.west);
+\draw[assoc] (v.south) -- ++(0,-8mm) |- (f.west);
+\end{tikzpicture}
+\captionof{figure}{Классы предметной области}
+\end{center}
+Coordinates является отдельной сущностью. Несколько объектов Vehicle могут ссылаться на один набор координат через внешний ключ coordinates\_id. Стрелки обозначают направленные ассоциации. Методы доступа на диаграмме опущены.
+
+\clearpage
+\subsection*{Классы приложения}
+\begin{center}
+\begin{tikzpicture}[node distance=16mm and 16mm]
+\node[cls,text width=61mm] (vc) {\centering\textbf{VehicleController}\nodepart{second}+ list(...): String\\+ create(...): String\\+ update(...): String\\+ delete(...): String};
+\node[cls,text width=61mm,right=of vc] (sc) {\centering\textbf{SpecialOperationsController}\nodepart{second}+ deleteByFuel(...): String\\+ deleteOneByConsumption(...): String\\+ count(...): String\\+ byType(...): String\\+ byPower(...): String};
+\node[cls,text width=61mm,below=of vc] (vs) {\centering\textbf{VehicleService}\nodepart{second}+ findPage(...): Page\\+ get(id): Vehicle\\+ create(form): Vehicle\\+ update(id, form): Vehicle\\+ delete(id): void};
+\node[cls,text width=61mm,below=of sc] (ss) {\centering\textbf{SpecialOperationsService}\nodepart{second}+ deleteAllByFuelType(...): long\\+ deleteOneByFuelConsumption(...)\\+ countByFuelConsumption\\\hspace*{3mm}GreaterThan(...): long\\+ findByType(...): List\\+ findByEnginePowerRange(...): List};
+\node[cls,text width=65mm,below=22mm of $(vs.south)!0.5!(ss.south)$] (r) {\centering $\langle\!\langle$interface$\rangle\!\rangle$\par\textbf{VehicleRepository}\nodepart{second}JpaRepository<Vehicle, Integer>\\JpaSpecificationExecutor<Vehicle>};
+\draw[assoc] (vc)--(vs);\draw[assoc] (sc)--(ss);
+\draw[assoc] (vs.south) |- ($(r.north)+(0,7mm)$) -- (r.north);
+\draw[assoc] (ss.south) |- ($(r.north)+(0,7mm)$) -- (r.north);
+\end{tikzpicture}
+\captionof{figure}{Контроллеры, сервисы и репозиторий}
+\end{center}
+Контроллер VehicleController получает данные через DTO VehicleForm. Сервис VehicleService использует этот DTO при создании и изменении объектов. Параметры методов сокращены для читаемости. VehicleRepository расширяет интерфейсы Spring Data JPA.
+
+\clearpage
+\subsection*{Связанные объекты и вход}
+\begin{center}
+\begin{tikzpicture}[node distance=16mm and 14mm]
+\node[cls,text width=62mm] (cc) {\centering\textbf{CoordinatesController}\nodepart{second}+ list(model): String\\+ create(x, y, ...): String\\+ update(id, x, y, ...): String\\+ delete(id, replacementId, ...): String};
+\node[cls,text width=62mm,right=of cc] (vf) {\centering\textbf{VehicleForm}\par $\langle\!\langle$DTO$\rangle\!\rangle$\nodepart{second}name, coordinatesId\\coordinateX, coordinateY\\type, enginePower\\numberOfWheels, capacity\\distanceTravelled\\fuelConsumption, fuelType};
+\node[cls,text width=62mm,below=of cc] (cs) {\centering\textbf{CoordinatesService}\nodepart{second}+ all(): List\\+ get(id): Coordinates\\+ create(x, y): Coordinates\\+ update(id, x, y): void\\+ delete(id, replacementId): void};
+\node[cls,text width=62mm,below=of vf] (cfg) {\centering\textbf{SecurityConfig}\nodepart{second}+ security(http)\\\hspace*{3mm}: SecurityFilterChain\\+ passwords(): PasswordEncoder\\+ users(...): UserDetailsService};
+\node[cls,text width=62mm,below=of cs] (cr) {\centering $\langle\!\langle$interface$\rangle\!\rangle$\par\textbf{CoordinatesRepository}\nodepart{second}JpaRepository<Coordinates, Integer>};
+\node[cls,text width=62mm,below=of cfg] (lc) {\centering\textbf{LoginController}\nodepart{second}+ login(): String};
+\draw[assoc] (cc)--(cs);\draw[assoc] (cs)--(cr);
+\end{tikzpicture}
+\captionof{figure}{Координаты, DTO и конфигурация входа}
+\end{center}
+CoordinatesService также использует VehicleRepository для поиска и переназначения связанных объектов. VehicleService обращается к CoordinatesService при выборе либо создании координат. SecurityConfig задаёт обязательный вход и двух пользователей с равными правами; LoginController возвращает страницу входа.
+
+\clearpage
+\subsection*{Обновление клиентов}
+\begin{center}
+\begin{tikzpicture}[node distance=18mm and 14mm]
+\node[cls,text width=60mm] (v) {\centering\textbf{VehicleService}\nodepart{second}CRUD-операции};
+\node[cls,text width=60mm,right=of v] (s) {\centering\textbf{SpecialOperationsService}\nodepart{second}Специальные операции};
+\node[cls,text width=66mm,below=20mm of $(v.south)!0.5!(s.south)$] (e) {\centering\textbf{VehicleChangedEvent}\par $\langle\!\langle$record$\rangle\!\rangle$\nodepart{second}operation: String\\vehicleId: Integer};
+\node[cls,text width=66mm,below=of e] (l) {\centering\textbf{VehicleChangeListener}\nodepart{second}+ onVehicleChanged(event): void};
+\node[cls,text width=66mm,below=of l] (h) {\centering\textbf{VehicleWebSocketHandler}\nodepart{second}+ broadcast(event): void};
+\draw[dep] (v.south) |- ($(e.north)+(0,7mm)$) -- (e.north);
+\draw[dep] (s.south) |- ($(e.north)+(0,7mm)$) -- (e.north);
+\draw[dep] (l) -- node[right,font=\small]{получает событие} (e);
+\draw[assoc] (l) -- (h);
+\end{tikzpicture}
+\captionof{figure}{Классы синхронизации}
+\end{center}
+Сервисы, включая CoordinatesService, публикуют событие через механизм событий Spring. Listener обрабатывает его после фиксации транзакции. WebSocketConfig регистрирует обработчик по адресу /ws/vehicles. Пунктир обозначает зависимость.
+
+\clearpage
+\subsection*{Пакеты приложения}
+\begin{center}
+\begin{tikzpicture}[node distance=20mm and 25mm]
+\node[pkg] (web) {web};
+\node[pkg,right=of web] (srv) {service};
+\node[pkg,below=of srv] (repo) {repository};
+\node[pkg,below=of web] (rt) {realtime};
+\node[pkg,below=of repo] (dom) {domain};
+\node[pkg,below=of rt] (sec) {security};
+\draw[dep] (web) -- (srv);
+\draw[dep] (srv) -- (repo);
+\draw[dep] (repo) -- (dom);
+\draw[dep] (web.east) -- ++(9mm,0) |- (dom.west);
+\draw[dep] (srv.east) -- ++(8mm,0) |- (dom.east);
+\draw[dep] (rt) -- (srv);
+\draw[dep] (srv.north) -- ++(0,10mm) -| node[pos=.75,above,font=\small]{DTO} (web.north);
+\end{tikzpicture}
+\captionof{figure}{Зависимости пакетов ru.itmo.vehiclelab}
+\end{center}
+Пакет web содержит MVC-контроллеры, VehicleForm и обработчик ошибок; service --- бизнес-логику, событие и исключение; repository --- доступ к данным; domain --- модель; realtime --- WebSocket-компоненты; security --- конфигурацию входа и защиты запросов.
+
+Зависимость service от web обусловлена использованием VehicleForm. Пакет realtime использует VehicleChangedEvent из service. Hibernate выполняет отображение модели в PostgreSQL; HTML-шаблоны и статические ресурсы находятся отдельно от Java-пакетов.
+
+\clearpage
+\section{Исходный код}
+Исходный код и конфигурация запуска опубликованы в репозитории:
+\begin{center}
+\url{https://github.com/wonkersone/informatsionnye-sistemy-lr1}
+\end{center}
+
+Приложение использует Java 21, Spring MVC, Hibernate, Spring Data JPA, Thymeleaf и Flyway. Основной профиль подключается к PostgreSQL. Профиль demo использует временную H2-базу и предназначен только для демонстрации. Адрес локального интерфейса: \url{http://localhost:6767}.
+
+Вход реализован средствами Spring Security; формы защищены CSRF-токенами. Координаты выбираются из существующих наборов либо создаются вместе с транспортом. При удалении используемых координат связанные транспортные средства переназначаются на выбранный набор в одной транзакции. Редактирование транспорта открывается в отдельном диалоговом окне.
+
+\section{Выводы}
+Разработана информационная система на Spring MVC и Hibernate с CRUD, пятью специальными операциями, авторизацией и синхронизацией клиентов. Реализованы хранение в PostgreSQL, проверка ограничений и переназначение связей. Восемь интеграционных тестов успешно выполнены на H2 и локальной PostgreSQL.
+\end{document}

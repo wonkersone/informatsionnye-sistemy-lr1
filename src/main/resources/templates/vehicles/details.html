@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Объект #' + ${vehicle.id})}"></head>
+<body data-live-updates="reload" th:attr="data-vehicle-id=${vehicle.id}">
+<header th:replace="~{fragments :: navigation('vehicles')}"></header>
+<main class="shell narrow">
+<div th:replace="~{fragments :: alerts}"></div>
+<section class="page-heading"><div><p class="section-label">ID <span th:text="${vehicle.id}"></span></p><h1 th:text="${vehicle.name}"></h1></div></section>
+<section class="detail-layout">
+<dl class="detail-grid">
+<div><dt>Координаты</dt><dd><a th:href="@{/coordinates}" th:text="'#' + ${vehicle.coordinates.id}"></a></dd></div>
+<div><dt>Координата X</dt><dd th:text="${vehicle.coordinates.x}"></dd></div>
+<div><dt>Координата Y</dt><dd th:text="${vehicle.coordinates.y}"></dd></div>
+<div><dt>Мощность двигателя</dt><dd th:text="${vehicle.enginePower}"></dd></div>
+<div><dt>Количество колёс</dt><dd th:text="${vehicle.numberOfWheels}"></dd></div>
+<div><dt>Вместимость</dt><dd th:text="${vehicle.capacity}"></dd></div>
+<div><dt>Пройденное расстояние</dt><dd th:text="${vehicle.distanceTravelled}"></dd></div>
+<div><dt>Расход топлива</dt><dd th:text="${vehicle.fuelConsumption}"></dd></div>
+</dl>
+<aside class="detail-summary">
+<dl><dt>Тип</dt><dd th:text="${vehicle.type.displayName}"></dd><dt>Топливо</dt><dd th:text="${vehicle.fuelType.displayName}"></dd><dt>Создан</dt><dd th:text="${#dates.format(vehicle.creationDate, 'dd.MM.yyyy HH:mm:ss')}"></dd></dl>
+<a data-edit class="button primary" th:href="@{/vehicles/{id}/edit(id=${vehicle.id})}">Изменить</a>
+<form method="post" th:action="@{/vehicles/{id}/delete(id=${vehicle.id})}" data-confirm="Удалить транспортное средство?"><button class="button danger" type="submit">Удалить</button></form>
+</aside></section>
+<a class="back-link" th:href="@{/vehicles}">← К реестру</a>
+</main></body></html>

@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head(${pageTitle})}"></head>
+<body data-live-updates="notify" data-edit-form="true" th:classappend="${dialog} ? 'dialog-page'">
+<header th:replace="~{fragments :: navigation(${vehicleId == null ? 'create' : 'vehicles'})}"></header>
+
+<main class="shell narrow">
+    <section class="page-heading compact">
+        <div>
+            <h1 th:text="${pageTitle}"></h1>
+        </div>
+    </section>
+
+    <form class="entity-form" method="post" th:action="${formAction + (dialog ? '?dialog=true' : '')}" th:object="${vehicleForm}">
+        <div class="validation-summary" th:if="${#fields.hasAnyErrors()}" role="alert">
+            <strong>Форма содержит ошибки</strong>
+            <p>Исправьте отмеченные поля и повторите сохранение.</p>
+            <p th:each="error : ${#fields.allErrors()}" th:text="${error}"></p>
+        </div>
+
+        <fieldset>
+            <legend>Идентификация</legend>
+            <div class="form-grid one">
+                <div class="field" th:classappend="${#fields.hasErrors('name')} ? 'invalid'">
+                    <label for="vehicle-name">Название <span aria-hidden="true">*</span></label>
+                    <input id="vehicle-name" th:field="*{name}" th:attr="aria-invalid=${#fields.hasErrors('name')},aria-describedby=${#fields.hasErrors('name') ? 'name-error' : null}" required maxlength="255" autocomplete="off">
+                    <p class="field-error" id="name-error" th:errors="*{name}"></p>
+                </div>
+                <div class="field" th:classappend="${#fields.hasErrors('type')} ? 'invalid'">
+                    <label for="vehicle-type">Тип <span aria-hidden="true">*</span></label>
+                    <select id="vehicle-type" th:field="*{type}" th:attr="aria-invalid=${#fields.hasErrors('type')},aria-describedby=${#fields.hasErrors('type') ? 'type-error' : null}" required>
+                        <option value="">Выберите тип</option>
+                        <option th:each="item : ${vehicleTypes}" th:value="${item}" th:text="${item.displayName}"></option>
+                    </select>
+                    <p class="field-error" id="type-error" th:errors="*{type}"></p>
+                </div>
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>Координаты</legend>
+            <div class="field coordinate-choice">
+                <label for="coordinates-id">Набор координат</label>
+                <select id="coordinates-id" th:field="*{coordinatesId}" th:attr="aria-invalid=${#fields.hasErrors('coordinatesId')},aria-describedby=${#fields.hasErrors('coordinatesId') ? 'coordinatesId-error' : null}">
+                    <option value="">Новые координаты</option>
+                    <option th:each="point : ${availableCoordinates}" th:value="${point.id}" th:attr="data-x=${point.x},data-y=${point.y}" th:text="'#' + ${point.id} + ' (' + ${point.x} + '; ' + ${point.y} + ')'"></option>
+                </select>
+                <p class="field-error" id="coordinatesId-error" th:errors="*{coordinatesId}"></p>
+            </div>
+            <div class="form-grid">
+                <div class="field" th:classappend="${#fields.hasErrors('coordinateX')} ? 'invalid'">
+                    <label for="coordinate-x">X <span aria-hidden="true">*</span></label>
+                    <input id="coordinate-x" type="number" step="any" th:field="*{coordinateX}" th:attr="aria-invalid=${#fields.hasErrors('coordinateX')},aria-describedby=${#fields.hasErrors('coordinateX') ? 'coordinateX-error' : null}" required>
+                    <p class="field-error" id="coordinateX-error" th:errors="*{coordinateX}"></p>
+                </div>
+                <div class="field" th:classappend="${#fields.hasErrors('coordinateY')} ? 'invalid'">
+                    <label for="coordinate-y">Y <span aria-hidden="true">*</span></label>
+                    <input id="coordinate-y" type="number" step="any" max="408" th:field="*{coordinateY}" th:attr="aria-invalid=${#fields.hasErrors('coordinateY')},aria-describedby=${#fields.hasErrors('coordinateY') ? 'coordinateY-error' : null}" required>
+                    <span class="field-hint">Максимальное значение: 408</span>
+                    <p class="field-error" id="coordinateY-error" th:errors="*{coordinateY}"></p>
+                </div>
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>Технические характеристики</legend>
+            <div class="form-grid">
+                <div class="field" th:classappend="${#fields.hasErrors('enginePower')} ? 'invalid'">
+                    <label for="engine-power">Мощность двигателя <span aria-hidden="true">*</span></label>
+                    <input id="engine-power" type="number" min="1" th:field="*{enginePower}" th:attr="aria-invalid=${#fields.hasErrors('enginePower')},aria-describedby=${#fields.hasErrors('enginePower') ? 'enginePower-error' : null}" required>
+                    <p class="field-error" id="enginePower-error" th:errors="*{enginePower}"></p>
+                </div>
+                <div class="field" th:classappend="${#fields.hasErrors('numberOfWheels')} ? 'invalid'">
+                    <label for="wheels">Количество колёс <span aria-hidden="true">*</span></label>
+                    <input id="wheels" type="number" min="1" th:field="*{numberOfWheels}" th:attr="aria-invalid=${#fields.hasErrors('numberOfWheels')},aria-describedby=${#fields.hasErrors('numberOfWheels') ? 'numberOfWheels-error' : null}" required>
+                    <p class="field-error" id="numberOfWheels-error" th:errors="*{numberOfWheels}"></p>
+                </div>
+                <div class="field" th:classappend="${#fields.hasErrors('capacity')} ? 'invalid'">
+                    <label for="capacity">Вместимость <span aria-hidden="true">*</span></label>
+                    <input id="capacity" type="number" min="0" data-positive step="any" th:field="*{capacity}" th:attr="aria-invalid=${#fields.hasErrors('capacity')},aria-describedby=${#fields.hasErrors('capacity') ? 'capacity-error' : null}" required>
+                    <p class="field-error" id="capacity-error" th:errors="*{capacity}"></p>
+                </div>
+                <div class="field" th:classappend="${#fields.hasErrors('distanceTravelled')} ? 'invalid'">
+                    <label for="distance">Пройденное расстояние <span aria-hidden="true">*</span></label>
+                    <input id="distance" type="number" min="1" th:field="*{distanceTravelled}" th:attr="aria-invalid=${#fields.hasErrors('distanceTravelled')},aria-describedby=${#fields.hasErrors('distanceTravelled') ? 'distanceTravelled-error' : null}" required>
+                    <p class="field-error" id="distanceTravelled-error" th:errors="*{distanceTravelled}"></p>
+                </div>
+                <div class="field" th:classappend="${#fields.hasErrors('fuelConsumption')} ? 'invalid'">
+                    <label for="fuel-consumption">Расход топлива <span aria-hidden="true">*</span></label>
+                    <input id="fuel-consumption" type="number" min="0" data-positive step="any" th:field="*{fuelConsumption}" th:attr="aria-invalid=${#fields.hasErrors('fuelConsumption')},aria-describedby=${#fields.hasErrors('fuelConsumption') ? 'fuelConsumption-error' : null}" required>
+                    <p class="field-error" id="fuelConsumption-error" th:errors="*{fuelConsumption}"></p>
+                </div>
+                <div class="field" th:classappend="${#fields.hasErrors('fuelType')} ? 'invalid'">
+                    <label for="fuel-type">Тип топлива <span aria-hidden="true">*</span></label>
+                    <select id="fuel-type" th:field="*{fuelType}" th:attr="aria-invalid=${#fields.hasErrors('fuelType')},aria-describedby=${#fields.hasErrors('fuelType') ? 'fuelType-error' : null}" required>
+                        <option value="">Выберите топливо</option>
+                        <option th:each="item : ${fuelTypes}" th:value="${item}" th:text="${item.displayName}"></option>
+                    </select>
+                    <p class="field-error" id="fuelType-error" th:errors="*{fuelType}"></p>
+                </div>
+            </div>
+        </fieldset>
+
+        <div class="form-actions">
+            <button class="button primary" type="submit" th:text="${submitLabel}"></button>
+            <a class="button ghost" th:href="${vehicleId == null ? '/vehicles' : '/vehicles/' + vehicleId}">Отмена</a>
+        </div>
+    </form>
+</main>
+
+</body>
+</html>

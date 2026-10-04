@@ -1,0 +1,19 @@
+@startuml
+skinparam monochrome true
+skinparam packageStyle rectangle
+package "ru.itmo.vehiclelab" {
+ package web
+ package service
+ package repository
+ package domain
+ package realtime
+ package security
+}
+web ..> service
+web ..> domain
+service ..> web : VehicleForm
+service ..> repository
+service ..> domain
+repository ..> domain
+realtime ..> service : VehicleChangedEvent
+@enduml

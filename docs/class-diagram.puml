@@ -1,0 +1,84 @@
+@startuml
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam classAttributeIconSize 0
+hide empty methods
+package domain {
+ class Vehicle <<Entity>> {
+  - id: Integer
+  - name: String
+  - coordinates: Coordinates
+  - creationDate: Date
+  - type: VehicleType
+  - enginePower: int
+  - numberOfWheels: Integer
+  - capacity: Double
+  - distanceTravelled: int
+  - fuelConsumption: double
+  - fuelType: FuelType
+  + update(...): void
+  + setCoordinates(Coordinates): void
+ }
+ class Coordinates <<Entity>> {
+  - id: Integer
+  - x: Double
+  - y: Float
+  + update(Double, Float): void
+ }
+ enum VehicleType { PLANE; BOAT; SHIP }
+ enum FuelType { DIESEL; ALCOHOL; MANPOWER }
+}
+package web {
+ class VehicleController
+ class SpecialOperationsController
+ class CoordinatesController
+ class LoginController
+ class HomeController
+ class VehicleForm <<DTO>>
+ class GlobalExceptionHandler
+}
+package service {
+ class VehicleService
+ class SpecialOperationsService
+ class CoordinatesService
+ class VehicleChangedEvent <<record>>
+ class VehicleNotFoundException
+}
+package repository {
+ interface VehicleRepository
+ interface CoordinatesRepository
+}
+package realtime {
+ class VehicleWebSocketHandler
+ class VehicleChangeListener
+ class WebSocketConfig
+}
+package security {
+ class SecurityConfig
+}
+Vehicle "0..*" --> "1" Coordinates
+Vehicle --> VehicleType
+Vehicle --> FuelType
+VehicleController --> VehicleService
+VehicleController --> CoordinatesService
+VehicleController --> VehicleForm
+SpecialOperationsController --> SpecialOperationsService
+CoordinatesController --> CoordinatesService
+VehicleService --> VehicleRepository
+VehicleService --> CoordinatesService
+VehicleService --> VehicleForm
+VehicleService ..> VehicleNotFoundException
+SpecialOperationsService --> VehicleRepository
+CoordinatesService --> VehicleRepository
+CoordinatesService --> CoordinatesRepository
+VehicleService ..> VehicleChangedEvent
+SpecialOperationsService ..> VehicleChangedEvent
+CoordinatesService ..> VehicleChangedEvent
+VehicleChangeListener ..> VehicleChangedEvent
+VehicleChangeListener --> VehicleWebSocketHandler
+WebSocketConfig --> VehicleWebSocketHandler
+VehicleWebSocketHandler ..> VehicleChangedEvent
+VehicleRepository ..> Vehicle
+CoordinatesRepository ..> Coordinates
+GlobalExceptionHandler ..> VehicleNotFoundException
+@enduml
