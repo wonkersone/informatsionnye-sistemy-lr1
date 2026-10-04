@@ -168,5 +168,5 @@
     }),
   );
 
-  if (!location.pathname.startsWith("/login")) connect();
+  if (status) connect();
 })();

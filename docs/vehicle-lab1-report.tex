@@ -27,7 +27,8 @@
 \usepackage{tikz}
 \usetikzlibrary{arrows.meta,positioning,shapes.multipart,calc}
 \usepackage{caption}
-\captionsetup{font=normalsize,labelsep=endash}
+\DeclareCaptionLabelSeparator{hyphen}{ - }
+\captionsetup{font=normalsize,labelsep=hyphen}
 \addto\captionsrussian{\renewcommand{\figurename}{Рисунок}}
 \usepackage[hidelinks]{hyperref}
 \hypersetup{pdftitle={Лабораторная работа №1. Вариант 84121905},pdfauthor={Лейковский Никита}}
@@ -84,11 +85,11 @@ fuelType & FuelType & Не null.\\\hline
 
 \subsection*{Основные требования}
 \begin{enumerate}
-\item Основное назначение информационной системы --- управление объектами, созданными на основе заданного в варианте класса.
+\item Основное назначение информационной системы - управление объектами, созданными на основе заданного в варианте класса.
 \item Необходимо, чтобы с помощью системы можно было выполнить следующие операции с объектами: создание нового объекта, получение информации об объекте по ИД, обновление объекта (модификация его атрибутов), удаление объекта. Операции должны осуществляться в отдельных окнах (интерфейсах) приложения. При получении информации об объекте класса должна также выводиться информация о связанных с ним объектах.
 \item При создании объекта класса необходимо дать пользователю возможность связать новый объект с объектами вспомогательных классов, которые могут быть связаны с созданным объектом и уже есть в системе.
 \item Выполнение операций по управлению объектами должно осуществляться на серверной части (не на клиенте), изменения должны синхронизироваться с базой данных.
-\item На главном экране системы должен выводиться список текущих объектов в виде таблицы (каждый атрибут объекта --- отдельная колонка в таблице). При отображении таблицы должна использоваться пагинация (если все объекты не помещаются на одном экране).
+\item На главном экране системы должен выводиться список текущих объектов в виде таблицы (каждый атрибут объекта - отдельная колонка в таблице). При отображении таблицы должна использоваться пагинация (если все объекты не помещаются на одном экране).
 \item Нужно обеспечить возможность фильтровать/сортировать строки таблицы, которые показывают объекты (по значениям любой из строковых колонок). Фильтрация элементов должна производиться только по полному совпадению.
 \item Переход к обновлению (модификации) объекта должен быть возможен из таблицы с общим списком объектов и из области с визуализацией объекта (при её реализации).
 \item При добавлении/удалении/изменении объекта он должен автоматически появиться/исчезнуть/измениться в интерфейсах у других пользователей, авторизованных в системе.
@@ -112,7 +113,7 @@ fuelType & FuelType & Не null.\\\hline
 \item Организовать хранение данных об объектах в реляционной СУБД PostgreSQL. Каждый объект, с которым работает ИС, должен быть сохранён в базе данных.
 \item Все требования к полям класса, указанные в виде комментариев к описанию классов, должны быть выполнены на уровне ORM и БД.
 \item Для генерации поля id использовать средства базы данных.
-\item Для подключения к БД на кафедральном сервере использовать хост pg, имя базы данных --- studs, имя пользователя/пароль совпадают с таковыми для подключения к серверу.
+\item Для подключения к БД на кафедральном сервере использовать хост pg, имя базы данных - studs, имя пользователя/пароль совпадают с таковыми для подключения к серверу.
 \end{enumerate}
 
 \subsection*{Взаимодействие с пользователем}
@@ -138,8 +139,8 @@ fuelType & FuelType & Не null.\\\hline
 \begin{center}
 \begin{tikzpicture}
 \node[cls,text width=68mm] (v) {\centering\textbf{Vehicle}\par $\langle\!\langle$Entity$\rangle\!\rangle$\nodepart{second}
--- id: Integer\\-- name: String\\-- coordinates: Coordinates\\-- creationDate: Date\\-- type: VehicleType\\-- enginePower: int\\-- numberOfWheels: Integer\\-- capacity: Double\\-- distanceTravelled: int\\-- fuelConsumption: double\\-- fuelType: FuelType\\[4pt]+ update(...): void};
-\node[cls,text width=40mm,right=18mm of v.north east,anchor=north west] (c) {\centering\textbf{Coordinates}\par $\langle\!\langle$Entity$\rangle\!\rangle$\nodepart{second}-- id: Integer\\-- x: Double\\-- y: Float\\[4pt]+ update(x, y): void};
+- id: Integer\\- name: String\\- coordinates: Coordinates\\- creationDate: Date\\- type: VehicleType\\- enginePower: int\\- numberOfWheels: Integer\\- capacity: Double\\- distanceTravelled: int\\- fuelConsumption: double\\- fuelType: FuelType\\[4pt]+ update(...): void};
+\node[cls,text width=40mm,right=18mm of v.north east,anchor=north west] (c) {\centering\textbf{Coordinates}\par $\langle\!\langle$Entity$\rangle\!\rangle$\nodepart{second}- id: Integer\\- x: Double\\- y: Float\\[4pt]+ update(x, y): void};
 \node[cls,text width=40mm,below=22mm of c] (t) {\centering\textbf{VehicleType}\par $\langle\!\langle$enumeration$\rangle\!\rangle$\nodepart{second}PLANE\\BOAT\\SHIP};
 \node[cls,text width=40mm,below=16mm of t] (f) {\centering\textbf{FuelType}\par $\langle\!\langle$enumeration$\rangle\!\rangle$\nodepart{second}DIESEL\\ALCOHOL\\MANPOWER};
 \draw[assoc] (v.east |- c.west) -- node[above,font=\small]{0..* \hspace{6mm} 1} (c.west);
@@ -174,14 +175,32 @@ Coordinates является отдельной сущностью. Нескол
 \node[cls,text width=62mm] (cc) {\centering\textbf{CoordinatesController}\nodepart{second}+ list(model): String\\+ create(x, y, ...): String\\+ update(id, x, y, ...): String\\+ delete(id, replacementId, ...): String};
 \node[cls,text width=62mm,right=of cc] (vf) {\centering\textbf{VehicleForm}\par $\langle\!\langle$DTO$\rangle\!\rangle$\nodepart{second}name, coordinatesId\\coordinateX, coordinateY\\type, enginePower\\numberOfWheels, capacity\\distanceTravelled\\fuelConsumption, fuelType};
 \node[cls,text width=62mm,below=of cc] (cs) {\centering\textbf{CoordinatesService}\nodepart{second}+ all(): List\\+ get(id): Coordinates\\+ create(x, y): Coordinates\\+ update(id, x, y): void\\+ delete(id, replacementId): void};
-\node[cls,text width=62mm,below=of vf] (cfg) {\centering\textbf{SecurityConfig}\nodepart{second}+ security(http)\\\hspace*{3mm}: SecurityFilterChain\\+ passwords(): PasswordEncoder\\+ users(...): UserDetailsService};
+\node[cls,text width=62mm,below=of vf] (cfg) {\centering\textbf{SecurityConfig}\nodepart{second}+ security(http)\\\hspace*{3mm}: SecurityFilterChain\\+ passwords(): PasswordEncoder};
 \node[cls,text width=62mm,below=of cs] (cr) {\centering $\langle\!\langle$interface$\rangle\!\rangle$\par\textbf{CoordinatesRepository}\nodepart{second}JpaRepository<Coordinates, Integer>};
-\node[cls,text width=62mm,below=of cfg] (lc) {\centering\textbf{LoginController}\nodepart{second}+ login(): String};
+\node[cls,text width=62mm,below=of cfg] (lc) {\centering\textbf{LoginController}\nodepart{second}+ login(): String\\+ registration(model): String\\+ register(form, errors): String};
 \draw[assoc] (cc)--(cs);\draw[assoc] (cs)--(cr);
 \end{tikzpicture}
 \captionof{figure}{Координаты, DTO и конфигурация входа}
 \end{center}
-CoordinatesService также использует VehicleRepository для поиска и переназначения связанных объектов. VehicleService обращается к CoordinatesService при выборе либо создании координат. SecurityConfig задаёт обязательный вход и двух пользователей с равными правами; LoginController возвращает страницу входа.
+CoordinatesService также использует VehicleRepository для поиска и переназначения связанных объектов. VehicleService обращается к CoordinatesService при выборе либо создании координат. SecurityConfig задаёт обязательный вход; LoginController обрабатывает вход и регистрацию.
+
+\clearpage
+\subsection*{Регистрация и учётные записи}
+\begin{center}
+\begin{tikzpicture}[node distance=18mm and 14mm]
+\node[cls,text width=62mm] (lc) {\centering\textbf{LoginController}\nodepart{second}+ register(form, errors): String};
+\node[cls,text width=62mm,right=of lc] (rf) {\centering\textbf{RegistrationForm}\nodepart{second}- username: String\\- password: String\\- confirmation: String\\+ isPasswordsMatch(): boolean};
+\node[cls,text width=62mm,below=of lc] (us) {\centering\textbf{UserService}\nodepart{second}UserDetailsService\\+ register(username, password): void\\+ loadUserByUsername(username)\\\hspace*{3mm}: UserDetails\\+ ensureUser(username, password)};
+\node[cls,text width=62mm,below=of rf] (ua) {\centering\textbf{UserAccount}\nodepart{second}- id: Long\\- username: String\\- passwordHash: String};
+\node[cls,text width=62mm,below=of us] (ur) {\centering\textbf{UserAccountRepository}\nodepart{second}JpaRepository<UserAccount, Long>\\+ findByUsername(username)\\+ existsByUsername(username)};
+\draw[assoc] (lc)--(us);
+\draw[dep] (lc)--(rf);
+\draw[assoc] (us)--(ur);
+\draw[dep] (ur.east) -| (ua.south);
+\end{tikzpicture}
+\captionof{figure}{Регистрация и хранение пользователей}
+\end{center}
+Учётные записи хранятся в PostgreSQL. Логин уникален и приводится к нижнему регистру. Пароли хешируются BCrypt. StartupData создаёт начальные учётные записи и 24 примера транспорта; SeedState отмечает выполненное заполнение, исключая повторное добавление.
 
 \clearpage
 \subsection*{Обновление клиентов}
@@ -221,7 +240,7 @@ CoordinatesService также использует VehicleRepository для по
 \end{tikzpicture}
 \captionof{figure}{Зависимости пакетов ru.itmo.vehiclelab}
 \end{center}
-Пакет web содержит MVC-контроллеры, VehicleForm и обработчик ошибок; service --- бизнес-логику, событие и исключение; repository --- доступ к данным; domain --- модель; realtime --- WebSocket-компоненты; security --- конфигурацию входа и защиты запросов.
+Пакет web содержит MVC-контроллеры, VehicleForm и обработчик ошибок; service - бизнес-логику, событие и исключение; repository - доступ к данным; domain - модель; realtime - WebSocket-компоненты; security - конфигурацию входа и защиты запросов.
 
 Зависимость service от web обусловлена использованием VehicleForm. Пакет realtime использует VehicleChangedEvent из service. Hibernate выполняет отображение модели в PostgreSQL; HTML-шаблоны и статические ресурсы находятся отдельно от Java-пакетов.
 
@@ -237,5 +256,5 @@ CoordinatesService также использует VehicleRepository для по
 Вход реализован средствами Spring Security; формы защищены CSRF-токенами. Координаты выбираются из существующих наборов либо создаются вместе с транспортом. При удалении используемых координат связанные транспортные средства переназначаются на выбранный набор в одной транзакции. Редактирование транспорта открывается в отдельном диалоговом окне.
 
 \section{Выводы}
-Разработана информационная система на Spring MVC и Hibernate с CRUD, пятью специальными операциями, авторизацией и синхронизацией клиентов. Реализованы хранение в PostgreSQL, проверка ограничений и переназначение связей. Восемь интеграционных тестов успешно выполнены на H2 и локальной PostgreSQL.
+Разработана информационная система на Spring MVC и Hibernate с CRUD, пятью специальными операциями, регистрацией, авторизацией и синхронизацией клиентов. Реализованы хранение в PostgreSQL, проверка ограничений и переназначение связей.
 \end{document}

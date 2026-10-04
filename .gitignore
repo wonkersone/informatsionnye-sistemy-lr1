@@ -1,5 +1,6 @@
 HELP.md
 target/
+logs/
 .mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
@@ -32,13 +33,13 @@ build/
 ### VS Code ###
 .vscode/
 
-### Local environment and verification artifacts ###
+### Локальные настройки и проверки ###
 .env
 .playwright-cli/
 output/
 *.log
 
-# Local project notes and generated artifacts
+# Рабочие заметки
 PRODUCT.md
 DESIGN.md
 AGENTS.md

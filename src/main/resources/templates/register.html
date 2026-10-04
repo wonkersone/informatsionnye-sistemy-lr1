@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Регистрация')}"></head>
+<body>
+<header class="topbar"><a class="brand" th:href="@{/vehicles}"><strong>Транспорт</strong><small>Лабораторная №1 · Вариант 84121905</small></a><div class="student"><strong>Лейковский Никита</strong><small>ИСУ 466497</small></div></header>
+<main class="login-panel">
+<h1>Регистрация</h1>
+<form method="post" th:action="@{/register}" th:object="${registrationForm}">
+<div class="alert" th:if="${#fields.hasAnyErrors()}" role="alert"><p th:each="error : ${#fields.allErrors()}" th:text="${error}"></p></div>
+<div class="field"><label for="username">Логин</label><input id="username" th:field="*{username}" autocomplete="username" minlength="3" maxlength="32" pattern="[A-Za-z0-9_]{3,32}" aria-describedby="login-hint" th:attr="aria-invalid=${#fields.hasErrors('username')}" required autofocus><small id="login-hint">3-32 латинские буквы, цифры или знак _</small></div>
+<div class="field"><label for="password">Пароль</label><input id="password" name="password" type="password" autocomplete="new-password" minlength="8" maxlength="72" aria-describedby="password-hint" th:attr="aria-invalid=${#fields.hasErrors('password') or #fields.hasErrors('passwordLengthValid')}" required><small id="password-hint">Не менее 8 символов</small></div>
+<div class="field"><label for="confirmation">Повторите пароль</label><input id="confirmation" name="confirmation" type="password" autocomplete="new-password" maxlength="72" th:attr="aria-invalid=${#fields.hasErrors('confirmation') or #fields.hasErrors('passwordsMatch')}" required></div>
+<button class="button primary" type="submit">Зарегистрироваться</button>
+</form>
+<p><a th:href="@{/login}">Уже есть аккаунт? Войти</a></p>
+</main></body></html>

@@ -6,8 +6,9 @@
 <main class="login-panel"><h1>Вход</h1>
 <p class="alert" th:if="${param.error}" role="alert">Неверный логин или пароль</p>
 <p class="alert" th:if="${param.logout}">Вы вышли из системы</p>
+<p class="alert" th:if="${param.registered}" role="status">Регистрация завершена. Войдите с новым логином и паролем.</p>
 <form method="post" th:action="@{/login}">
 <div class="field"><label for="username">Логин</label><input id="username" name="username" autocomplete="username" required autofocus></div>
 <div class="field"><label for="password">Пароль</label><input id="password" name="password" type="password" autocomplete="current-password" required></div>
 <button class="button primary" type="submit">Войти</button>
-</form></main></body></html>
+</form><p><a th:href="@{/register}">Создать аккаунт</a></p></main></body></html>

@@ -540,6 +540,9 @@ dd {
   display: grid;
   gap: 20px;
 }
+.login-panel > p {
+  margin-top: 20px;
+}
 .logout-form {
   margin-top: 32px;
   padding: 12px 14px;
